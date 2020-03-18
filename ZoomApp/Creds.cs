@@ -7,7 +7,7 @@ namespace ZoomApp
 {
     public static class Creds
     {
-        public static readonly string ApiKey = "DhOcjzjZQzefVcFsGL6DEQ";
-        public static readonly string Secret = "FgiKs6E6NEllxJiesOdYRzBmy2aiZUP57lvR";
+        public static readonly string ApiKey = "";
+        public static readonly string Secret = "";
     }
 }
