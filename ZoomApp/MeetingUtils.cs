@@ -6,7 +6,7 @@ using System.Web;
 
 namespace ZoomApp
 {
-    public static class MeetingHandler
+    public static class MeetingUtils
     {
         static readonly char[] padding = { '=' };
 

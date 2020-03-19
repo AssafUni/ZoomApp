@@ -18,8 +18,8 @@ namespace ZoomApp
         protected void Page_Load(object sender, EventArgs e)
         {
             ZoomApiClient client = new ZoomApiClient(Creds.ApiKey, Creds.Secret);
-            string meetingNumber = client.getNewMeetingId("BlaBla", "BlaBla");
-            this.Sig = MeetingHandler.GenerateSignature(Creds.ApiKey, Creds.Secret, meetingNumber, "0");
+            string meetingNumber = client.GetNewMeetingId("BlaBla", "BlaBla");
+            this.Sig = MeetingUtils.GenerateSignature(Creds.ApiKey, Creds.Secret, meetingNumber, "0");
   
             this.MeetingNumber = meetingNumber;
             this.UserName = "Bla Bla";

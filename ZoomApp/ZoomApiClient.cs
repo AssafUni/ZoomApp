@@ -30,9 +30,9 @@ namespace ZoomApp
             this.token = encoder.Encode(payload, secret);
         }
 
-        public string getNewMeetingId(string topic, string agenda)
+        public string GetNewMeetingId(string topic, string agenda)
         {
-            ZoomMeeting meeting = createMeeting(topic, agenda);
+            ZoomMeeting meeting = CreateMeeting(topic, agenda);
             
             if (meeting != null)
             {
@@ -44,13 +44,13 @@ namespace ZoomApp
             }
         }
 
-        private ZoomMeeting createMeeting(string topic, string agenda)
+        private ZoomMeeting CreateMeeting(string topic, string agenda)
         {
-            ZoomUsers users = getUsers();
+            ZoomUsers users = GetUsers();
 
             if (users != null)
             {
-                IRestResponse res = makeMeetingCall(users.users[0].id, topic, agenda);
+                IRestResponse res = MakeMeetingCall(users.users[0].id, topic, agenda);
                 if (res.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     return JsonConvert.DeserializeObject<ZoomMeeting>(res.Content);
@@ -66,9 +66,9 @@ namespace ZoomApp
             }
         }
 
-        private ZoomUsers getUsers()
+        private ZoomUsers GetUsers()
         {
-            IRestResponse res = makeGetUsersCall();
+            IRestResponse res = MakeGetUsersCall();
  
             if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -80,7 +80,7 @@ namespace ZoomApp
             }
         }
 
-        private IRestResponse makeCreateUserCall(string email, string name, string lastName)
+        private IRestResponse MakeCreateUserCall(string email, string name, string lastName)
         {
             var payload = new Dictionary<string, object>
             {
@@ -95,10 +95,10 @@ namespace ZoomApp
                 }
             };
  
-            return makeCall("https://api.zoom.us/v2/users", payload);
+            return MakeCall("https://api.zoom.us/v2/users", payload);
         }
 
-        private IRestResponse makeMeetingCall(string userId, string topic, string agenda)
+        private IRestResponse MakeMeetingCall(string userId, string topic, string agenda)
         {         
             var payload = new Dictionary<string, object>
             {
@@ -111,10 +111,10 @@ namespace ZoomApp
                     }
                 }
             };
-            return makeCall("https://api.zoom.us/v2/users/" + userId + "/meetings", payload);
+            return MakeCall("https://api.zoom.us/v2/users/" + userId + "/meetings", payload);
         }
 
-        private IRestResponse makeGetUsersCall()
+        private IRestResponse MakeGetUsersCall()
         {
             var client = new RestClient("https://api.zoom.us/v2/users?status=active&page_size=10&page_number=1");
             var request = new RestRequest(Method.GET);
@@ -123,7 +123,7 @@ namespace ZoomApp
             return client.Execute(request);
         }
 
-        private IRestResponse makeCall(string url, object obj)
+        private IRestResponse MakeCall(string url, object obj)
         {
             var client = new RestClient(url);
             var request = new RestRequest(Method.POST);
