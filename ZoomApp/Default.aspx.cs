@@ -22,7 +22,7 @@ namespace ZoomApp
             ZoomApiClient client = new ZoomApiClient(Creds.ApiKey, Creds.Secret, "Pool");
             List<ZoomUsers.ZoomUser> usersPool = client.GetUsersPool();
             ZoomMeetings.ZoomMeeting meeting = client.GetNewMeeting(usersPool[0].id, "BlaBla", "BlaBla", true);
-            this.Sig = MeetingUtils.GenerateSignature(Creds.ApiKey, Creds.Secret, meeting.id, "0");
+            this.Sig = MeetingUtils.GenerateSignature(Creds.ApiKey, Creds.Secret, meeting.id, MeetingUtils.AtendeeRole);
   
             this.MeetingNumber = meeting.id;
             this.UserName = "Bla Bla";

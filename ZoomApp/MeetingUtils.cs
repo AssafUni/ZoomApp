@@ -8,6 +8,8 @@ namespace ZoomApp
 {
     public static class MeetingUtils
     {
+        public static readonly string AtendeeRole = "0";
+        public static readonly string HostRole = "0";
         static readonly char[] padding = { '=' };
 
         public static string GenerateSignature(string apiKey, string secret, string meetingNumber, string role)
