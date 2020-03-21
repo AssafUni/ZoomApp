@@ -32,33 +32,53 @@ namespace ZoomApp
             this.poolDept = poolDept;
         }
 
-        public List<String> GetUsersPoolIds()
+        public List<ZoomUsers.ZoomUser> GetUsersPool()
         {
             ZoomUsers users = GetUsers();
-            List<String> ids = new List<string>();
+            List<ZoomUsers.ZoomUser> usersList = new List<ZoomUsers.ZoomUser>();
 
             foreach (ZoomUsers.ZoomUser user in users.users)
             {
                 if (user.dept == this.poolDept)
                 {
-                    ids.Add(user.id);
+                    usersList.Add(user);
                 }
             }
 
-            return ids;
+            return usersList;
         }
 
-        public string GetNewMeetingNumber(string userId, string topic, string agenda)
+        public ZoomMeetings.ZoomMeeting GetNewMeeting(string userId, string topic, string agenda, bool endLiveMeeting)
         {
-            ZoomMeetings.ZoomMeeting meeting = CreateMeeting(userId, topic, agenda);
-            
-            if (meeting != null)
+            if (endLiveMeeting) { EndLiveMeetings(userId); }
+
+            return CreateMeeting(userId, topic, agenda);
+        }
+
+        public ZoomMeetings GetLiveMeetings(string userId)
+        {
+            IRestResponse res = MakeListMeetingsCall(userId);
+
+            if (res.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                return meeting.id;
-            } 
+                return JsonConvert.DeserializeObject<ZoomMeetings>(res.Content);
+            }
             else
             {
                 return null;
+            }
+        }
+
+        public void EndLiveMeetings(string userId)
+        {
+            ZoomMeetings meetings = GetLiveMeetings(userId);
+
+            if (meetings != null && meetings.meetings != null)
+            {
+                foreach(ZoomMeetings.ZoomMeeting meeting in meetings.meetings)
+                {
+                    EndMeeting(meeting.id);
+                }
             }
         }
 
@@ -103,20 +123,6 @@ namespace ZoomApp
             }
         }
 
-        public ZoomMeetings GetLiveMeetings(string userId)
-        {
-            IRestResponse res = MakeListMeetingsCall(userId);
-
-            if (res.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                return JsonConvert.DeserializeObject<ZoomMeetings>(res.Content);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         private IRestResponse MakeMeetingUpdateCall(string meetingId)
         {
             var payload = new Dictionary<string, object>
@@ -124,7 +130,7 @@ namespace ZoomApp
                 { "action", "end" },
             };
 
-            return MakeCall("https://api.zoom.us/v2/meetings/" + meetingId + "/status", payload);
+            return MakeCall("https://api.zoom.us/v2/meetings/" + meetingId + "/status", payload, Method.PUT);
         }
 
         private IRestResponse MakeMeetingCall(string userId, string topic, string agenda)
@@ -164,10 +170,10 @@ namespace ZoomApp
             return client.Execute(request);
         }
 
-        private IRestResponse MakeCall(string url, object obj)
+        private IRestResponse MakeCall(string url, object obj, Method method = Method.POST)
         {
             var client = new RestClient(url);
-            var request = new RestRequest(Method.POST);
+            var request = new RestRequest(method);
             request.AddHeader("content-type", "application/json");
             request.AddHeader("authorization", "Bearer " + this.token);
             request.AddJsonBody(obj);

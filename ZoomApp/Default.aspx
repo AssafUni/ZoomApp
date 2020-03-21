@@ -8,27 +8,30 @@
         ZoomMtg.preLoadWasm();
         ZoomMtg.prepareJssdk();
 
-        ZoomMtg.init({
-                debug: true,
-				leaveUrl: 'https://yoursite.com/meetingEnd',
-				isSupportAV: true,
-				success: function() {
-					ZoomMtg.join({
-						signature: '<%= Sig %>',
-						apiKey: '<%= ApiKey %>',
-						meetingNumber: '<%= MeetingNumber %>',
-						userName: '<%= UserName %>',
-                        success: function(success) {
+        setTimeout(function () {
+            ZoomMtg.init({
+                leaveUrl: 'https://yoursite.com/meetingEnd',
+                isSupportAV: true,
+                isShowJoiningErrorDialog: false,
+                success: function () {
+                    ZoomMtg.join({
+                        signature: '<%= Sig %>',
+                        apiKey: '<%= ApiKey %>',
+                        meetingNumber: '<%= MeetingNumber %>',
+                        userName: '<%= UserName %>',
+                        success: function (success) {
                             console.log(success)
                         },
-                        error: function(error) {
+                        error: function (error) {
                             console.log(error)
+                            location.href = '<%= MeetingUrl %>';
                         }
-					})		
+                    })
                 },
-                error: function(error) {
+                error: function (error) {
                     console.log(error)
                 }
-		})
+            })
+        }, 2000);
     </script>
 </asp:Content>

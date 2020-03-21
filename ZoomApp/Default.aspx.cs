@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using static ZoomApp.ZoomApiClient;
 
 namespace ZoomApp
 {
@@ -14,15 +15,18 @@ namespace ZoomApp
         protected String Sig = null;
         protected String MeetingNumber = null;
         protected String UserName = null;
+        protected String MeetingUrl = null;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             ZoomApiClient client = new ZoomApiClient(Creds.ApiKey, Creds.Secret, "Pool");
-            string meetingNumber = client.GetNewMeetingNumber("xOgTIVD2SxGpOrXS4kF_0A", "BlaBla", "BlaBla");
-            this.Sig = MeetingUtils.GenerateSignature(Creds.ApiKey, Creds.Secret, meetingNumber, "0");
+            List<ZoomUsers.ZoomUser> usersPool = client.GetUsersPool();
+            ZoomMeetings.ZoomMeeting meeting = client.GetNewMeeting(usersPool[0].id, "BlaBla", "BlaBla", true);
+            this.Sig = MeetingUtils.GenerateSignature(Creds.ApiKey, Creds.Secret, meeting.id, "0");
   
-            this.MeetingNumber = meetingNumber;
+            this.MeetingNumber = meeting.id;
             this.UserName = "Bla Bla";
+            this.MeetingUrl = meeting.start_url;
         }
     }
 }
