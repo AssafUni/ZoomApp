@@ -228,6 +228,7 @@ namespace ZoomApp
                 public string uuid;
                 public string id;
                 public string start_url;
+                public string join_url;
             }
         }
     }

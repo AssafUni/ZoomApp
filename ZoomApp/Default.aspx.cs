@@ -26,7 +26,7 @@ namespace ZoomApp
   
             this.MeetingNumber = meeting.id;
             this.UserName = "Bla Bla";
-            this.MeetingUrl = meeting.start_url;
+            this.MeetingUrl = meeting.join_url;
         }
     }
 }
